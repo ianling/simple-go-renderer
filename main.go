@@ -26,10 +26,14 @@ var lines = drawing.LineSegments{
 
 var triangles = []drawing.Triangle{
 	drawing.NewTriangle(250, 250, 350, 250, 300, 100, 255, 0, 0, 255),
+	drawing.NewTriangle(450, 250, 550, 250, 500, 100, 255, 0, 0, 255),
+	drawing.NewTriangle(50, 250, 150, 250, 100, 100, 255, 0, 0, 255),
 }
 
 var rectangles = []drawing.Rectangle{
-	drawing.NewRectangle(200, 350, 75, 40, 0, 0, 255, 255),
+	drawing.NewRectangle(250, 350, 75, 40, 0, 0, 255, 255),
+	drawing.NewRectangle(450, 350, 75, 40, 0, 0, 255, 255),
+	drawing.NewRectangle(50, 350, 75, 40, 0, 0, 255, 255),
 }
 
 func main() {
@@ -38,7 +42,6 @@ func main() {
 
 	var screenBuffer []byte
 	var err error
-	var xxx int
 	for running := true; running; running = handleEvents() {
 		// track average FPS over each second, print once per second
 		deltaCounter += deltaTime()
@@ -46,21 +49,15 @@ func main() {
 			fmt.Println(int(frameCounter / deltaCounter.Seconds()))
 			deltaCounter = 0
 			frameCounter = 0
-
-			if xxx%3 == 0 {
-				triangles[0].Origin = triangles[0].VertexA
-			} else if xxx%3 == 1 {
-				triangles[0].Origin = triangles[0].VertexB
-			} else if xxx%3 == 2 {
-				triangles[0].Origin = triangles[0].VertexC
-			}
-
-			xxx++
 		}
 
 		//lines[4].Rotation += 0.06
-		triangles[0].Rotation += 0.06
-		rectangles[0].Rotation += 0.06
+		triangles[0].Rotation.Z += 0.06
+		triangles[1].Rotation.X += 0.06
+		triangles[2].Rotation.Y += 0.06
+		rectangles[0].Rotation.Z += 0.06
+		rectangles[1].Rotation.X += 0.06
+		rectangles[2].Rotation.Y += 0.06
 
 		// track mouse position with a line for fun
 		mouseX32, mouseY32, _ := sdl.GetMouseState()

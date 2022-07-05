@@ -11,8 +11,8 @@ type Drawable struct {
 	Origin Vector2
 	// the translation along each axis in pixels
 	Translation Vector2
-	// the rotation about the Origin in degrees
-	Rotation float64
+	// the rotation in degrees around the Origin, about each axis
+	Rotation Vector3
 	// the scale factor along each axis (1 = no change, 2 = double, etc)
 	Scale Vector2
 }
@@ -27,13 +27,25 @@ func (drawable *Drawable) ApplyTranslation(x, y int) (int, int) {
 
 func (drawable *Drawable) ApplyRotation(x, y int) (int, int) {
 	// convert angle from degrees -> radians
-	angleRad := drawable.Rotation * (math.Pi / float64(180))
+
+	angleXRad := drawable.Rotation.X * (math.Pi / float64(180))
+	angleYRad := drawable.Rotation.Y * (math.Pi / float64(180))
+	angleZRad := drawable.Rotation.Z * (math.Pi / float64(180))
 
 	x -= drawable.Origin.X
 	y -= drawable.Origin.Y
 
-	newX := int(math.Cos(angleRad)*float64(x)) + int(math.Sin(angleRad)*float64(y))
-	newY := -int(math.Sin(angleRad)*float64(x)) + int(math.Cos(angleRad)*float64(y))
+	// Z axis
+	newX := int(math.Cos(angleZRad)*float64(x)) + int(math.Sin(angleZRad)*float64(y))
+	newY := -int(math.Sin(angleZRad)*float64(x)) + int(math.Cos(angleZRad)*float64(y))
+
+	// X-axis
+	// X-coordinate is unchanged
+	newY = int(math.Cos(angleXRad) * float64(newY))
+
+	// Y-axis
+	// Y-coordinate is unchanged
+	newX = int(math.Cos(angleYRad) * float64(newX))
 
 	newX += drawable.Origin.X
 	newY += drawable.Origin.Y
