@@ -13,8 +13,10 @@ type LineSegment struct {
 }
 
 func NewLineSegment(x1, y1, x2, y2 int, r, g, b, a uint8) LineSegment {
+	originX := x1
+	originY := y1
 	return LineSegment{
-		Drawable: NewDrawable(),
+		Drawable: NewDrawable(Vector2{X: originX, Y: originY}),
 		Color:    Color{R: r, G: g, B: b, A: a},
 		VertexA:  Vector2{X: x1, Y: y1},
 		VertexB:  Vector2{X: x2, Y: y2},
@@ -30,6 +32,12 @@ type Liner interface {
 func (line *LineSegment) Draw(screenBuffer []byte) {
 	aX, aY := line.ApplyTransformations(line.VertexA.X, line.VertexA.Y)
 	bX, bY := line.ApplyTransformations(line.VertexB.X, line.VertexB.Y)
+
+	// debug
+	//SetPixel(screenBuffer, int(aX), int(aY), line.Color.R, line.Color.G, line.Color.B, line.Color.A)
+	//SetPixel(screenBuffer, int(bX), int(bY), line.Color.R, line.Color.G, line.Color.B, line.Color.A)
+	//return
+
 	dx := float64(bX - aX)
 	dy := float64(bY - aY)
 	absDx := math.Abs(dx)
@@ -42,8 +50,8 @@ func (line *LineSegment) Draw(screenBuffer []byte) {
 	}
 	dx = dx / step
 	dy = dy / step
-	x := float64(line.VertexA.X)
-	y := float64(line.VertexA.Y)
+	x := float64(aX)
+	y := float64(aY)
 	for ii := float64(1); ii <= step; ii += 1 {
 		SetPixel(screenBuffer, int(x), int(y), line.Color.R, line.Color.G, line.Color.B, line.Color.A)
 		x += dx

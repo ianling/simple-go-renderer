@@ -9,8 +9,10 @@ type Rectangle struct {
 }
 
 func NewRectangle(x, y, width, height int, r, g, b, a uint8) Rectangle {
+	originX := x + (width / 2)
+	originY := y + (height / 2)
 	return Rectangle{
-		Drawable: NewDrawable(),
+		Drawable: NewDrawable(Vector2{X: originX, Y: originY}),
 		Color:    Color{R: r, G: g, B: b, A: a},
 		Position: Vector2{X: x, Y: y},
 		Width:    width,
