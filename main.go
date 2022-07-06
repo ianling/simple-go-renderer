@@ -60,10 +60,10 @@ func main() {
 		triangles[3].Rotation.X += 0.06
 		triangles[3].Rotation.Y += 0.04
 		triangles[3].Rotation.Z += 0.03
-		rectangles[0].Rotation.Z += 0.06
-		rectangles[1].Rotation.X += 0.06
-		rectangles[2].Rotation.Y += 0.06
-		rectangles[3].Rotation.X += 0.06
+		rectangles[0].Rotation.Z += 0.07
+		rectangles[1].Rotation.X += 0.07
+		rectangles[2].Rotation.Y += 0.07
+		rectangles[3].Rotation.X += 0.07
 		rectangles[3].Rotation.Y += 0.04
 		rectangles[3].Rotation.Z += 0.03
 
