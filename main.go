@@ -25,18 +25,23 @@ var lines = drawing.LineSegments{
 }
 
 var triangles = []drawing.Triangle{
-	drawing.NewTriangle(250, 250, 350, 250, 300, 100, 255, 0, 0, 255),
-	drawing.NewTriangle(450, 250, 550, 250, 500, 100, 255, 0, 0, 255),
-	drawing.NewTriangle(50, 250, 150, 250, 100, 100, 255, 0, 0, 255),
-	drawing.NewTriangle(650, 250, 750, 250, 700, 100, 255, 0, 0, 255),
+	drawing.NewTriangle(50, 250, 0, 150, 250, 0, 100, 100, 0, 255, 0, 0, 255),
+	drawing.NewTriangle(250, 250, 0, 350, 250, 0, 300, 100, 0, 255, 0, 0, 255),
+	drawing.NewTriangle(450, 250, 0, 550, 250, 0, 500, 100, 0, 255, 0, 0, 255),
+	drawing.NewTriangle(650, 250, 0, 750, 250, 0, 700, 100, 0, 255, 0, 0, 255),
 }
 
 var rectangles = []drawing.Rectangle{
-	drawing.NewRectangle(250, 350, 75, 40, 0, 0, 255, 255),
-	drawing.NewRectangle(450, 350, 75, 40, 0, 0, 255, 255),
-	drawing.NewRectangle(50, 350, 75, 40, 0, 0, 255, 255),
-	drawing.NewRectangle(650, 350, 75, 40, 0, 0, 255, 255),
+	drawing.NewRectangle(50, 350, 0, 75, 40, 255, 0, 255, 255),
+	drawing.NewRectangle(250, 350, 0, 75, 40, 255, 0, 255, 255),
+	drawing.NewRectangle(450, 350, 0, 75, 40, 255, 0, 255, 255),
+	drawing.NewRectangle(650, 350, 0, 75, 40, 255, 0, 255, 255),
 }
+
+var cube = drawing.NewCube(175, 175, 175, 150, 150, 150, drawing.Color{R: 255, G: 0, B: 0, A: 255})
+
+var running bool
+var paused bool
 
 func main() {
 	_, renderer, texture, sdlCleanupFunc := newSDLWindow(windowWidth, windowHeight)
@@ -44,13 +49,17 @@ func main() {
 
 	var screenBuffer []byte
 	var err error
-	for running := true; running; running = handleEvents() {
+	for running = true; running; running = handleEvents() {
 		// track average FPS over each second, print once per second
 		deltaCounter += deltaTime()
 		if deltaCounter.Seconds() >= 1 {
 			fmt.Println(int(frameCounter / deltaCounter.Seconds()))
 			deltaCounter = 0
 			frameCounter = 0
+		}
+
+		if paused {
+			continue
 		}
 
 		//lines[4].Rotation += 0.06
@@ -67,11 +76,14 @@ func main() {
 		rectangles[3].Rotation.Y += 0.04
 		rectangles[3].Rotation.Z += 0.03
 
+		//cube.Rotation.X += 0.03
+		//cube.Rotation.Y += 0.03
+
 		// track mouse position with a line for fun
 		mouseX32, mouseY32, _ := sdl.GetMouseState()
 		mouseX, mouseY := constrainWithinWindow(int(mouseX32), int(mouseY32))
-		lines[0].VertexB.X = mouseX
-		lines[0].VertexB.Y = mouseY
+		lines[0].VertexB.X = float64(mouseX)
+		lines[0].VertexB.Y = float64(mouseY)
 
 		// get a byte array from our render texture so we can fill in pixels
 		if screenBuffer, _, err = texture.Lock(&screenRect); err != nil {
@@ -89,6 +101,8 @@ func main() {
 		for _, rectangle := range rectangles {
 			rectangle.Draw(screenBuffer)
 		}
+
+		//cube.Draw(screenBuffer)
 
 		texture.Unlock()
 

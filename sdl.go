@@ -51,10 +51,12 @@ func deltaTime() time.Duration {
 }
 
 func handleEvents() (continueRunning bool) {
-	for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
-		switch event.(type) {
+	for e := sdl.PollEvent(); e != nil; e = sdl.PollEvent() {
+		switch event := e.(type) {
 		case *sdl.QuitEvent:
 			return false
+		case *sdl.KeyboardEvent:
+			return KeyboardHandler(event)
 		}
 	}
 

@@ -1,37 +1,113 @@
 package drawing
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
+
+const floatEquivalenceMargin = 1e-9
+
+func aboutEqual(x, y float64) bool {
+	return math.Abs(y-x) < floatEquivalenceMargin
+}
 
 func TestDrawable_ApplyRotation(t *testing.T) {
-	d := NewDrawable(Vector2{X: 0, Y: 0})
+	d := NewDrawable(Vector3{})
 
+	// Z-axis rotations
 	d.Rotation.Z = 90
-	x, y := d.ApplyRotation(5, 5)
-	if x != 5 || y != -5 {
-		t.Errorf("incorrect rotation of 90 degrees, expected 5,-5 got %d,%d", x, y)
+	x, y, z := d.ApplyRotation(5, 5, 0)
+	if !aboutEqual(x, 5) || !aboutEqual(y, -5) || !aboutEqual(z, 0) {
+		t.Errorf("Z-axis 90 degrees, expected 5,-5,0 got %f,%f,%f", x, y, z)
 	}
 
 	d.Rotation.Z = 180
-	x, y = d.ApplyRotation(5, 5)
-	if x != -5 || y != -5 {
-		t.Errorf("incorrect rotation of 180 degrees, expected -5,-5 got %d,%d", x, y)
+	x, y, z = d.ApplyRotation(5, 5, 0)
+	if !aboutEqual(x, -5) || !aboutEqual(y, -5) || !aboutEqual(z, 0) {
+		t.Errorf("Z-axis 180 degrees, expected -5,-5,0 got %f,%f,%f", x, y, z)
 	}
 
 	d.Rotation.Z = 270
-	x, y = d.ApplyRotation(5, 5)
-	if x != -5 || y != 5 {
-		t.Errorf("incorrect rotation of 270 degrees, expected -5,5 got %d,%d", x, y)
+	x, y, z = d.ApplyRotation(5, 5, 0)
+	if !aboutEqual(x, -5) || !aboutEqual(y, 5) || !aboutEqual(z, 0) {
+		t.Errorf("Z-axis 270 degrees, expected -5,5,0 got %f,%f,%f", x, y, z)
 	}
 
 	d.Rotation.Z = 360
-	x, y = d.ApplyRotation(5, 5)
-	if x != 5 || y != 5 {
-		t.Errorf("incorrect rotation of 360 degrees, expected 5,5 got %d,%d", x, y)
+	x, y, z = d.ApplyRotation(5, 5, 0)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, 0) {
+		t.Errorf("Z-axis 360 degrees, expected 5,5,0 got %f,%f,%f", x, y, z)
 	}
 
 	d.Rotation.Z = 720
-	x, y = d.ApplyRotation(5, 5)
-	if x != 5 || y != 5 {
-		t.Errorf("incorrect rotation of 720 degrees, expected 5,5 got %d,%d", x, y)
+	x, y, z = d.ApplyRotation(5, 5, 0)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, 0) {
+		t.Errorf("Z-axis 720 degrees, expected 5,5,0 got %f,%f,%f", x, y, z)
+	}
+
+	d.ResetRotation()
+
+	// X-axis rotations
+	d.Rotation.X = 90
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, -5) {
+		t.Errorf("X-axis 90 degrees, expected 5,5,-5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.X = 180
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, -5) || !aboutEqual(z, -5) {
+		t.Errorf("X-axis 180 degrees, expected 5,-5,-5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.X = 270
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, -5) || !aboutEqual(z, 5) {
+		t.Errorf("X-axis 270 degrees, expected 5,-5,5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.X = 360
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, 5) {
+		t.Errorf("X-axis 360 degrees, expected 5,5,5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.X = 720
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, 5) {
+		t.Errorf("X-axis 720 degrees, expected 5,5,5 got %f,%f,%f", x, y, z)
+	}
+
+	d.ResetRotation()
+
+	// Y-axis rotations
+	d.Rotation.Y = 90
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, -5) || !aboutEqual(y, 5) || !aboutEqual(z, 5) {
+		t.Errorf("Y-axis 90 degrees, expected -5,5,5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.Y = 180
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, -5) || !aboutEqual(y, 5) || !aboutEqual(z, -5) {
+		t.Errorf("Y-axis 180 degrees, expected -5,5,-5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.Y = 270
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, -5) {
+		t.Errorf("Y-axis 270 degrees, expected 5,5,-5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.Y = 360
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, 5) {
+		t.Errorf("Y-axis 360 degrees, expected 5,5,5 got %f,%f,%f", x, y, z)
+	}
+
+	d.Rotation.Y = 720
+	x, y, z = d.ApplyRotation(5, 5, 5)
+	if !aboutEqual(x, 5) || !aboutEqual(y, 5) || !aboutEqual(z, 5) {
+		t.Errorf("Y-axis 720 degrees, expected 5,5,5 got %f,%f,%f", x, y, z)
 	}
 }
