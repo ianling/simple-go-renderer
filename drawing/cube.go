@@ -2,8 +2,8 @@ package drawing
 
 type Cube struct {
 	Drawable
-	Color    Color
 	Position Vector3
+	Color    Color
 	Width    float64
 	Height   float64
 	Depth    float64
@@ -15,62 +15,71 @@ func NewCube(x, y, z, width, height, depth float64, color Color) Cube {
 	originZ := z + (depth / 2)
 	return Cube{
 		Drawable: NewDrawable(Vector3{X: originX, Y: originY, Z: originZ}),
-		Color:    color,
 		Position: Vector3{X: x, Y: y, Z: z},
+		Color:    color,
 		Width:    width,
 		Height:   height,
 		Depth:    depth,
 	}
 }
 
-func (cube *Cube) Rectangles() []Rectangle {
-	// a cube is made up of 6 rectangular faces, 5 of which are just the front face rotated in some way.
-	// the default positions are given assuming the cube is being viewed front-on (so only the front face is visible),
-	// without regard for rotation or perspective
-	frontFace := Rectangle{
-		Drawable: cube.Drawable,
-		Position: cube.Position,
-		Width:    cube.Width,
-		Height:   cube.Height,
-		Color:    cube.Color,
+func (cube *Cube) Faces() []Polygon {
+	leftBottomFrontVertex := Vector3{
+		X: cube.Position.X,
+		Y: cube.Position.Y,
+		Z: cube.Position.Z,
 	}
-	leftFace := frontFace
-	rightFace := frontFace
-	topFace := frontFace
-	bottomFace := frontFace
-	backFace := frontFace
+	rightBottomFrontVertex := Vector3{
+		X: cube.Position.X + cube.Width,
+		Y: cube.Position.Y,
+		Z: cube.Position.Z,
+	}
+	leftBottomBackVertex := Vector3{
+		X: cube.Position.X,
+		Y: cube.Position.Y,
+		Z: cube.Position.Z + cube.Depth,
+	}
+	rightBottomBackVertex := Vector3{
+		X: cube.Position.X + cube.Width,
+		Y: cube.Position.Y,
+		Z: cube.Position.Z + cube.Depth,
+	}
+	leftTopFrontVertex := Vector3{
+		X: cube.Position.X,
+		Y: cube.Position.Y + cube.Height,
+		Z: cube.Position.Z,
+	}
+	rightTopFrontVertex := Vector3{
+		X: cube.Position.X + cube.Width,
+		Y: cube.Position.Y + cube.Height,
+		Z: cube.Position.Z,
+	}
+	leftTopBackVertex := Vector3{
+		X: cube.Position.X,
+		Y: cube.Position.Y + cube.Height,
+		Z: cube.Position.Z + cube.Depth,
+	}
+	rightTopBackVertex := Vector3{
+		X: cube.Position.X + cube.Width,
+		Y: cube.Position.Y + cube.Height,
+		Z: cube.Position.Z + cube.Depth,
+	}
 
-	// from front-on, the left face is rotated 90 degrees (counter-clockwise) about the Y-axis,
-	leftFace.Rotation.Y += 90
+	frontVertices := []Vector3{leftBottomFrontVertex, rightBottomFrontVertex, rightTopFrontVertex, leftTopFrontVertex}
+	leftVertices := []Vector3{leftBottomFrontVertex, leftTopFrontVertex, leftTopBackVertex, leftBottomBackVertex}
+	rightVertices := []Vector3{rightBottomFrontVertex, rightTopFrontVertex, rightTopBackVertex, rightBottomBackVertex}
+	topVertices := []Vector3{leftTopFrontVertex, rightTopFrontVertex, rightTopBackVertex, leftTopBackVertex}
+	bottomVertices := []Vector3{leftBottomFrontVertex, rightBottomFrontVertex, rightBottomBackVertex, leftBottomBackVertex}
+	backVertices := []Vector3{leftBottomBackVertex, rightBottomBackVertex, rightTopBackVertex, leftTopBackVertex}
 
-	// right face is rotated 270 degrees about the Y-axis
-	rightFace.Rotation.Y += 270
+	frontFace := NewPolygon(frontVertices, cube.Drawable, cube.Color)
+	leftFace := NewPolygon(leftVertices, cube.Drawable, cube.Color)
+	rightFace := NewPolygon(rightVertices, cube.Drawable, cube.Color)
+	topFace := NewPolygon(topVertices, cube.Drawable, cube.Color)
+	bottomFace := NewPolygon(bottomVertices, cube.Drawable, cube.Color)
+	backFace := NewPolygon(backVertices, cube.Drawable, cube.Color)
 
-	// top face is rotated 90 degrees about the X-axis
-	topFace.Rotation.X += 90
-
-	// bottom face is rotated 270 degrees about the X-axis
-	bottomFace.Rotation.X += 270
-
-	//// back face is rotated 180 degrees about the X-axis
-	backFace.Rotation.X += 180
-
-	// debug: different colors for each face
-	// left green
-	leftFace.Color.R = 0
-	leftFace.Color.G = 255
-	// right blue
-	rightFace.Color.R = 0
-	rightFace.Color.B = 255
-	// top red-green
-	topFace.Color.G = 200
-	// bottom red-blue
-	bottomFace.Color.B = 200
-	// back white
-	backFace.Color.G = 255
-	backFace.Color.B = 255
-
-	return []Rectangle{
+	return []Polygon{
 		frontFace,
 		leftFace,
 		rightFace,
@@ -81,7 +90,7 @@ func (cube *Cube) Rectangles() []Rectangle {
 }
 
 func (cube *Cube) Draw(pixelBuffer []byte) {
-	for _, rectangle := range cube.Rectangles() {
-		rectangle.Draw(pixelBuffer)
+	for _, rectangle := range cube.Faces() {
+        rectangle.Draw(pixelBuffer)
 	}
 }

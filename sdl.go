@@ -31,7 +31,17 @@ func newSDLWindow(width, height int32) (*sdl.Window, *sdl.Renderer, *sdl.Texture
 		panic(err)
 	}
 
+	err = renderer.SetDrawBlendMode(sdl.BLENDMODE_BLEND)
+	if err != nil {
+		panic(err)
+	}
+
 	texture, err := renderer.CreateTexture(sdl.PIXELFORMAT_ARGB8888, sdl.TEXTUREACCESS_STREAMING, windowWidth, windowHeight)
+	if err != nil {
+		panic(err)
+	}
+
+	err = texture.SetBlendMode(sdl.BLENDMODE_BLEND)
 	if err != nil {
 		panic(err)
 	}
