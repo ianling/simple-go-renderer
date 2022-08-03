@@ -53,8 +53,8 @@ func newSDLWindow(width, height int32) (*sdl.Window, *sdl.Renderer, *sdl.Texture
 	}
 }
 
-// deltaTime returns the time delta between frames
-func deltaTime() time.Duration {
+// DeltaTime returns the time delta between frames
+func DeltaTime() time.Duration {
 	last := sdlPerformanceCounter
 	sdlPerformanceCounter = sdl.GetPerformanceCounter()
 	return time.Duration(float64(time.Millisecond) * float64((sdlPerformanceCounter-last)*1000) / float64(sdl.GetPerformanceFrequency()))

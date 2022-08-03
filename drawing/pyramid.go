@@ -64,8 +64,8 @@ func (pyramid *Pyramid) Faces() []Polygon {
 	}
 }
 
-func (pyramid *Pyramid) Draw(pixelBuffer []byte) {
+func (pyramid *Pyramid) Draw(window pixelBufferer) {
 	for _, face := range pyramid.Faces() {
-		face.Draw(pixelBuffer)
+		face.Draw(window)
 	}
 }

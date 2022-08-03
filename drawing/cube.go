@@ -89,8 +89,8 @@ func (cube *Cube) Faces() []Polygon {
 	}
 }
 
-func (cube *Cube) Draw(pixelBuffer []byte) {
+func (cube *Cube) Draw(window pixelBufferer) {
 	for _, rectangle := range cube.Faces() {
-        rectangle.Draw(pixelBuffer)
+		rectangle.Draw(window)
 	}
 }

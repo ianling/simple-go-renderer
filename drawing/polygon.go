@@ -25,6 +25,6 @@ func (polygon *Polygon) Lines() LineSegments {
 	return lineSegments
 }
 
-func (polygon *Polygon) Draw(screenBuffer []byte) {
-	polygon.Lines().Draw(screenBuffer)
+func (polygon *Polygon) Draw(window pixelBufferer) {
+	polygon.Lines().Draw(window)
 }

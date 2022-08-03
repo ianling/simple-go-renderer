@@ -23,7 +23,7 @@ func NewLineSegment(vertexA, vertexB Vector3, drawable Drawable, color Color) Li
 
 type LineSegments []LineSegment
 
-func (line *LineSegment) Draw(screenBuffer []byte) {
+func (line *LineSegment) Draw(window pixelBufferer) {
 	aX, aY, aZ := line.ApplyTransformations(line.VertexA.X, line.VertexA.Y, line.VertexA.Z)
 	bX, bY, bZ := line.ApplyTransformations(line.VertexB.X, line.VertexB.Y, line.VertexB.Z)
 
@@ -46,21 +46,21 @@ func (line *LineSegment) Draw(screenBuffer []byte) {
 	z := aZ
 	for ii := float64(1); ii <= step; ii += 1 {
 		//SetPixel(screenBuffer, int(x), int(y), line.Color.R, line.Color.G, line.Color.B, uint8(math.Min(math.Max(float64(line.Color.A)*(z/100), 0), 255)))
-		SetPixel(screenBuffer, int(x), int(y), line.Color.R, line.Color.G, line.Color.B, line.Color.A)
+		window.SetPixel(int(x), int(y), z, line.Color.R, line.Color.G, line.Color.B, line.Color.A)
 		x += dx
 		y += dy
 		z += dz
 	}
 }
 
-func (lines LineSegments) drawAsync(screenBuffer []byte) {
+func (lines LineSegments) drawAsync(window pixelBufferer) {
 	var wg sync.WaitGroup
 	wg.Add(len(lines))
 
 	for ii := range lines {
 		ii := ii
 		go func() {
-			lines[ii].Draw(screenBuffer)
+			lines[ii].Draw(window)
 			wg.Done()
 		}()
 	}
@@ -68,12 +68,12 @@ func (lines LineSegments) drawAsync(screenBuffer []byte) {
 	wg.Wait()
 }
 
-func (lines LineSegments) drawSync(screenBuffer []byte) {
+func (lines LineSegments) drawSync(window pixelBufferer) {
 	for ii := range lines {
-		lines[ii].Draw(screenBuffer)
+		lines[ii].Draw(window)
 	}
 }
 
-func (lines LineSegments) Draw(screenBuffer []byte) {
-	lines.drawSync(screenBuffer)
+func (lines LineSegments) Draw(window pixelBufferer) {
+	lines.drawSync(window)
 }

@@ -16,21 +16,21 @@ var screenRect = sdl.Rect{
 	H: windowHeight,
 }
 
-var cube = drawing.NewCube(175, 175, -150, 150, 150, 150, drawing.Color{R: 255, G: 0, B: 0, A: 255})
-var pyramid = drawing.NewPyramid(475, 175, -50, 150, 150, 250, drawing.Color{R: 255, G: 0, B: 0, A: 255})
+var cube = drawing.NewCube(175, 175, -150, 150, 150, 150, drawing.ColorRed)
+var pyramid = drawing.NewPyramid(475, 175, -50, 150, 150, 250, drawing.ColorGreen)
 
 var running bool
 var paused bool
 
 func main() {
 	_, renderer, texture, sdlCleanupFunc := newSDLWindow(windowWidth, windowHeight)
+	window := NewWindow(windowWidth, windowHeight)
+
 	defer exit(sdlCleanupFunc)
 
-	var screenBuffer []byte
-	var err error
 	for running = true; running; running = handleEvents() {
 		// track average FPS over each second, print once per second
-		deltaCounter += deltaTime()
+		deltaCounter += DeltaTime()
 		if deltaCounter.Seconds() >= 1 {
 			fmt.Println(int(frameCounter / deltaCounter.Seconds()))
 			deltaCounter = 0
@@ -55,19 +55,20 @@ func main() {
 		//lines[0].VertexB.X = float64(mouseX)
 		//lines[0].VertexB.Y = float64(mouseY)
 
+		cube.Draw(window)
+		pyramid.Draw(window)
+
 		// get a byte array from our render texture so we can fill in pixels
-		if screenBuffer, _, err = texture.Lock(&screenRect); err != nil {
+		if screenBuffer, _, err := texture.Lock(&screenRect); err != nil {
 			panic(err)
+		} else {
+			window.CopyPixelBufferTo(screenBuffer)
+			window.ClearBuffer()
 		}
-
-		clearBuffer(screenBuffer)
-
-		cube.Draw(screenBuffer)
-		pyramid.Draw(screenBuffer)
 
 		texture.Unlock()
 
-		if err = renderer.Copy(texture, &screenRect, &screenRect); err != nil {
+		if err := renderer.Copy(texture, &screenRect, &screenRect); err != nil {
 			panic(err)
 		}
 		renderer.Present()
